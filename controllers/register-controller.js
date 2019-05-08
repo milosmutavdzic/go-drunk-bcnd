@@ -6,7 +6,13 @@ module.exports.registerFieldsValidation = [
     check('username').exists().isLength({ min: 5}).trim().escape().withMessage('Username must be at least 5 characters long'),
     check('email').exists().isEmail().normalizeEmail().withMessage('Email must be in correct format'),
     check('password').exists().isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
-    check('confirmPassword', 'Passwords do not match').custom((value, {req}) => (value === req.body.password))
+    check('confirmPassword', 'Passwords do not match').custom((value, {req}) => (value === req.body.password)),
+    check('phone').exists(),
+    check('firstName').exists(),
+    check('lastName').exists(),
+    check('address').exists(),
+    check('city').exists(),
+    check('country').exists()
 ];
 module.exports.registerController = (req, res) => {
     // express-validator on validation errors return array of errors
@@ -21,6 +27,12 @@ module.exports.registerController = (req, res) => {
         "username": req.body.username,
         "email": req.body.email,
         "password": hash,
+        "phone": req.body.phone,
+        "firstName": req.body.firstName,
+        "lastName": req.body.lastName,
+        "address": req.body.address,
+        "city": req.body.city,
+        "country": req.body.country,
         "created_at": dateNow,
         "updated_at": dateNow
     }
@@ -32,7 +44,7 @@ module.exports.registerController = (req, res) => {
     }).catch(err => {
         res.status(500).json({
             success: false,
-            error: err
+            error: err.sqlMessage ? err.sqlMessage : "Internal server error"
         });
     });
 }
