@@ -1,8 +1,7 @@
 var db = require('../database');
 
 module.exports.getLocationsController = (req, res) => {
-    
-    db.select('id','user_id','lng','lat','vote_number', 'percentage','updated_at').from('locations').where({active: 1})
+    db.select('id','user_id','lng','lat','patrol_type','vote_number', 'percentage','updated_at').from('locations').where({active: 1})
     .then(data => {
         res.status(200).json({
             success: true,

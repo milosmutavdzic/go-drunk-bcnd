@@ -27,7 +27,6 @@ module.exports.votingController = (req, res) => {
         })
     })
     .catch(err => {
-        console.log(err);
         res.status(500).json({
             success: false,
             error: (err.errno === 1062) ? 'You already voted' : (err.sqlMessage ? err.sqlMessage : "Internal server error")
