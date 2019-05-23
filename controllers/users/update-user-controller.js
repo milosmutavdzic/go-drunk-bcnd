@@ -1,4 +1,4 @@
-var db = require('../database');
+var db = require('../../database');
 
 module.exports.updateUserController = (req, res) => {
     const now = new Date();

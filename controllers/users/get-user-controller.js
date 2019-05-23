@@ -1,4 +1,4 @@
-var db = require('../database');
+var db = require('../../database');
 
 module.exports.getUserController = (req, res) => {
     db.select('id', 'username', 'email', 'phone', 'firstName', 'lastName', 'address', 'city', 'country')

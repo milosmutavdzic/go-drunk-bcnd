@@ -1,23 +1,24 @@
 require('dotenv').config();
 
-let express = require('express');
-let bodyParser = require('body-parser');
-let cors = require('cors');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const cron = require('node-cron');
 
 let verifyToken = require('./middleware/verifyToken');
-let authenticateController = require('./controllers/authenticate-controller');
-let { registerController, registerFieldsValidation } = require('./controllers/register-controller');
-let { getUserController } = require('./controllers/get-user-controller');
-let { updateUserController } = require('./controllers/update-user-controller');
+let authenticateController = require('./controllers/users/authenticate-controller');
+let { registerController, registerFieldsValidation } = require('./controllers/users/register-controller');
+let { getUserController } = require('./controllers/users/get-user-controller');
+let { updateUserController } = require('./controllers/users/update-user-controller');
+let { resetPasswordController } = require('./controllers/users/reset-pass-controller');
 
-let { newLocationController } = require('./controllers/newlocation-controller');
-let { getLocationsController } = require('./controllers/get-locations-controller');
-let { votingController } = require('./controllers/voting-controller');
+let { newLocationController } = require('./controllers/locations/newlocation-controller');
+let { getLocationsController } = require('./controllers/locations/get-locations-controller');
+let { votingController } = require('./controllers/locations/voting-controller');
 
-let { resetPasswordController } = require('./controllers/reset-pass-controller');
+let { locationsSync } = require('./controllers/db-locations-sync');
 
-
-let app = express();
+const app = express();
 
 const environment = process.env.NODE_ENV; 
 const stage = require('./config')[environment];
@@ -30,12 +31,14 @@ app.post('/users', registerFieldsValidation, registerController);
 app.get('/users', verifyToken, getUserController );
 app.put('/users', verifyToken,updateUserController );
 app.post('/authenticate', authenticateController.authenticate);
+app.post('/reset-pass', resetPasswordController);
 
 app.get('/locations', verifyToken, getLocationsController);
 app.post('/locations', verifyToken, newLocationController);
 app.post('/vote', verifyToken, votingController);
 
-app.post('/reset-pass', resetPasswordController);
+//  update old location on every hour
+cron.schedule("0 0 */1 * * *", locationsSync );
 
 app.listen(`${stage.port}`, () => {
     console.log(`Server now listening at localhost:${stage.port}`);

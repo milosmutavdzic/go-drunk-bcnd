@@ -1,4 +1,4 @@
-var db = require('../database');
+var db = require('../../database');
 
 module.exports.votingController = (req, res) => {
     let { location_id, user_id, valid_location } = req.body;
@@ -22,7 +22,7 @@ module.exports.votingController = (req, res) => {
     .then(() => {
         res.status(200).json({
             success: true,
-            message: `Voted sucessfully`,
+            message: `You voted successfully!`,
             updatedLocation: updatedLocation
         })
     })

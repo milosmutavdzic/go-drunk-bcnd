@@ -1,4 +1,4 @@
-var db = require('../database');
+var db = require('../../database');
 
 module.exports.getLocationsController = (req, res) => {
     db.select('id','user_id','lng','lat','patrol_type','vote_number', 'percentage','updated_at').from('locations').where({active: 1})
